@@ -1,0 +1,4 @@
+#!/bin/sh
+rm -f dist.tar
+tar -cvf dist.tar src/ build.sh
+base64 dist.tar | xclip -sel clip

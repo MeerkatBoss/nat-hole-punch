@@ -172,7 +172,9 @@ int probe_peer(int socket, sockaddr_in peer, ClientConfig* config) {
       (const struct sockaddr*) &peer,
       sizeof(peer)
   );
-  assert(res >= 0);
+  if (res < 0) {
+    return 0;
+  }
   ClientHello peer_response;
   set_timeout(socket, 500);
   res = receive_from_addr(socket, &peer_response, sizeof(peer_response), peer);
