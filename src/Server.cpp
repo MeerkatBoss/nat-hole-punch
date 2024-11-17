@@ -137,7 +137,7 @@ static int make_socket(uint8_t ip_address[4], uint16_t port) {
 
   struct sockaddr_in address;
   address.sin_family = AF_INET;
-  address.sin_port = ntohl(port);
+  address.sin_port = ntohs(port);
   res = inet_aton(addr_buffer, &address.sin_addr);
   assert(res == 1);
 

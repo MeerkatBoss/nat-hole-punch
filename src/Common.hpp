@@ -31,6 +31,20 @@ struct ServerResponse {
   in_port_t global_port;
 };
 
+enum class ClientMessageType : uint8_t {
+  HELLO_1,
+  HELLO_2,
+  PING,
+  PONG,
+  GOODBYE
+};
+
+struct ClientHello {
+  ClientMessageType type;
+  uint64_t random;
+};
+
+
 } // namespace stun
 
 #endif /* Common.hpp */

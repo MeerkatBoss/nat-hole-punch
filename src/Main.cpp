@@ -1,3 +1,4 @@
+#include "Client.hpp"
 #include "Server.hpp"
 #include <cstring>
 #include <iostream>
@@ -10,9 +11,10 @@ int main(int argc, char** argv)
 {
   const char* usage =
     "Usage:\n"
-    "nat-hole-punch <client|server> IP PORT\n";
+    "  nat-hole-punch server IP PORT\n"
+    "  nat-hole-punch client IP PORT SERVER-IP SERVER-PORT\n";
 
-  if (argc != 4) {
+  if (argc < 4) {
     std::cerr << usage;
     return 1;
   }
@@ -35,12 +37,37 @@ int main(int argc, char** argv)
   }
 
   if (strcmp("server", argv[1]) == 0) {
+    if (argc != 4) {
+      std::cerr << usage;
+      return 1;
+    }
+
     stun::run_server(addr, port);
     return 0;
   }
   if (strcmp("client", argv[1]) == 0) {
-    std::cerr << "Client is not implemented yet\n";
-    return 2;
+    if (argc != 6) {
+      std::cerr << usage;
+      return 1;
+    }
+
+    uint8_t server_addr[4];
+    uint16_t server_port;
+    res = parse_ip(argv[4], server_addr);
+    if (res < 0) {
+      std::cerr << "Invalid ip address '" << argv[4] << "'\n";
+      std::cerr << usage;
+      return 1;
+    }
+    res = parse_port(argv[5], &server_port);
+    if (res < 0) {
+      std::cerr << "Invalid port '" << argv[5] << "'\n";
+      std::cerr << usage;
+      return 1;
+    }
+    
+    stun::run_client(addr, port, server_addr, server_port);
+    return 0;
   }
 
   std::cerr << "Unknown mode '" << argv[1] << "'\n";
